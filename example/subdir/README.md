@@ -1,4 +1,4 @@
-# Jupyter-LC_index
+# Jupyter-LC_index (subdir)
 
 The extension shows README.svg and README.md on the tree page of Jupyter.
 
