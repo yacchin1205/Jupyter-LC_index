@@ -22,3 +22,17 @@ global-exclude *.pyc
 global-exclude *.pyo
 global-exclude .git
 global-exclude .ipynb_checkpoints
+
+include *.svg
+include *.txt
+include Dockerfile
+recursive-include example *.blockdiag
+recursive-include example *.ipynb
+recursive-include example *.md
+recursive-include example *.png
+recursive-include example *.svg
+recursive-include lc_index *.css
+recursive-include lc_index *.js
+recursive-include lc_index *.yaml
+recursive-include tests *.md
+recursive-include tests *.svg
