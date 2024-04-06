@@ -85,7 +85,7 @@ test('should show README.md or README.svg if exists.', async ({ page }) => {
   await delay(1000);
   let tabBar = page.locator('.lm-DockPanel-tabBar');
   let tabList = tabBar.getByRole('tablist');
-  await expect(tabList.getByText('README.svg')).toHaveCount(1);
+  await expect(tabList.getByText('Index')).toHaveCount(1);
 
   // create "README.md" as Markdown file
   await page.getByRole('menuitem', { name: 'File' }).click();
@@ -112,7 +112,7 @@ test('should show README.md or README.svg if exists.', async ({ page }) => {
   await delay(1000);
   tabBar = page.locator('.lm-DockPanel-tabBar');
   tabList = tabBar.getByRole('tablist');
-  await expect(tabList.getByText('README.md')).toHaveCount(1);
+  await expect(tabList.getByText('Index')).toHaveCount(1);
 
   // delete README.md and README.svg if exists
   await page.filebrowser.openDirectory('.');
