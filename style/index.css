@@ -1,1 +1,7 @@
 @import url('base.css');
+
+.lc-index-widget {
+  display: block;
+  overflow: auto;
+  padding: 1em;
+}
