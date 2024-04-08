@@ -5,9 +5,18 @@ import {
 } from '@jupyterlab/application';
 import { IDocumentManager } from '@jupyterlab/docmanager';
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
+import { Platform, getPlatform } from './widgets/platform';
+import { observeFileBrowser } from './widgets/files';
+import { createOpener } from './widgets/open';
+import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
 
 const MarkdownFileName = 'README.md';
 const SvgFileName = 'README.svg';
+
+async function checkPlatform(app: JupyterFrontEnd): Promise<Platform> {
+  await app.restored;
+  return await getPlatform(app);
+}
 
 /**
  * Initialization data for the lc_index extension.
@@ -15,41 +24,55 @@ const SvgFileName = 'README.svg';
 const plugin: JupyterFrontEndPlugin<void> = {
   id: 'lc_index:plugin',
   autoStart: true,
-  requires: [IDocumentManager, IFileBrowserFactory],
+  requires: [IDocumentManager, IFileBrowserFactory, IRenderMimeRegistry],
   activate: (
     app: JupyterFrontEnd,
     documents: IDocumentManager,
-    fileBrowserFactory: IFileBrowserFactory
+    fileBrowserFactory: IFileBrowserFactory,
+    renderMimeRegistry: IRenderMimeRegistry
   ) => {
     console.log('JupyterLab extension lc_index is activated!');
 
-    app.restored.then(() => {
-      const fileBrowser = fileBrowserFactory.tracker.currentWidget;
-      if (!fileBrowser) {
-        throw new Error('file browser is not set');
-      }
-
-      // README.md
-      let item = find(fileBrowser.model.items(), item =>
-        new RegExp(`^${MarkdownFileName}$`, 'i').test(item.name)
-      );
-      let widgetName = 'Markdown Preview';
-      if (!item) {
+    checkPlatform(app).then((platform: Platform) => {
+      let detectedPath: string | null = null;
+      let removeOldWidget: (() => void) | null = () => {};
+      const opener = createOpener(app, platform, documents, renderMimeRegistry);
+      observeFileBrowser(fileBrowserFactory, fileBrowser => {
+        console.log('fileBrowser:', fileBrowser.model.path);
+        if (detectedPath === fileBrowser.model.path) {
+          return;
+        }
+        if (!find(fileBrowser.model.items(), item => item.name.length > 0)) {
+          return;
+        }
         // README.svg
-        item = find(fileBrowser.model.items(), item =>
+        const svgItem = find(fileBrowser.model.items(), item =>
           new RegExp(`^${SvgFileName}$`, 'i').test(item.name)
         );
-        widgetName = 'Image';
-      }
-      if (item) {
-        console.log('open: ' + item.path);
-        const ret = documents.openOrReveal(item.path, widgetName);
-        console.log(ret);
-      } else {
-        console.log(
-          MarkdownFileName + ' nor ' + SvgFileName + ' are not found'
+        // README.md
+        const markdownItem = find(fileBrowser.model.items(), item =>
+          new RegExp(`^${MarkdownFileName}$`, 'i').test(item.name)
         );
-      }
+        detectedPath = fileBrowser.model.path;
+        if (removeOldWidget) {
+          removeOldWidget();
+        }
+        if (svgItem || markdownItem) {
+          console.log('open:', svgItem?.path, markdownItem?.path);
+          opener
+            .open(svgItem?.path, markdownItem?.path)
+            .then((remove: () => void) => {
+              removeOldWidget = remove;
+            })
+            .catch((reason: any) => {
+              console.error(reason);
+            });
+        } else {
+          console.log(
+            MarkdownFileName + ' nor ' + SvgFileName + ' are not found'
+          );
+        }
+      });
     });
   }
 };

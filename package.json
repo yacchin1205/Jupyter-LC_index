@@ -58,14 +58,17 @@
     "watch:src": "tsc -w"
   },
   "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@jupyterlab/application": "^4.0.3",
-    "@jupyterlab/coreutils": "^6.0.3",
+    "@jupyterlab/coreutils": "^4.0.3",
     "@jupyterlab/docmanager": "^4.0.3",
-    "@jupyterlab/filebrowser": "^4.0.3"
+    "@jupyterlab/filebrowser": "^4.0.3",
+    "@jupyterlab/rendermime": "^4.0.3"
   },
   "devDependencies": {
     "@jupyterlab/builder": "^4.0.0",
     "@types/json-schema": "^7.0.11",
+    "@types/node": "^20.12.5",
     "@types/react": "^18.0.26",
     "@typescript-eslint/eslint-plugin": "^6.1.0",
     "@typescript-eslint/parser": "^6.1.0",
