@@ -64,7 +64,8 @@ abstract class BaseOpener implements IContentOpener {
       panel.addWidget(svgRenderer);
     }
     if (markdownPath) {
-      const markdownModel = await this.documents.services.contents.get(markdownPath);
+      const markdownModel =
+        await this.documents.services.contents.get(markdownPath);
       const markdownMimeType = 'text/markdown';
       const markdownRenderer =
         this.renderMimeRegistry.createRenderer(markdownMimeType);
