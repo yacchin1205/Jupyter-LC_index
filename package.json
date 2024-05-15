@@ -63,7 +63,8 @@
     "@jupyterlab/coreutils": "^6.0.3",
     "@jupyterlab/docmanager": "^4.0.3",
     "@jupyterlab/filebrowser": "^4.0.3",
-    "@jupyterlab/rendermime": "^4.0.3"
+    "@jupyterlab/rendermime": "^4.0.3",
+    "@jupyterlab/services": "^4.0.3"
   },
   "devDependencies": {
     "@jupyterlab/builder": "^4.0.0",
