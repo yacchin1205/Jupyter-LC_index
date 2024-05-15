@@ -4,6 +4,8 @@ import { IRenderMimeRegistry, MimeModel } from '@jupyterlab/rendermime';
 import { LabIcon } from '@jupyterlab/ui-components';
 import { Widget, Panel } from '@lumino/widgets';
 import { JupyterFrontEnd } from '@jupyterlab/application';
+import { URLExt } from '@jupyterlab/coreutils';
+import { ServerConnection } from '@jupyterlab/services';
 
 import { faPager } from '@fortawesome/free-solid-svg-icons';
 
@@ -186,6 +188,7 @@ class JupyterLabOpener extends BaseOpener implements IContentOpener {
 
 class JupyterNotebook7Opener extends BaseOpener implements IContentOpener {
   private panels: Notebook7TreePanels;
+  private settings: ServerConnection.ISettings;
 
   constructor(
     documents: IDocumentManager,
@@ -194,6 +197,7 @@ class JupyterNotebook7Opener extends BaseOpener implements IContentOpener {
   ) {
     super(documents, renderMimeRegistry);
     this.panels = panels;
+    this.settings = ServerConnection.makeSettings();
   }
 
   protected addWidget(widget: Widget): RemoveCallback {
@@ -212,13 +216,14 @@ class JupyterNotebook7Opener extends BaseOpener implements IContentOpener {
     linkFor: LinkFor,
     subPath: string
   ): string {
+    const { baseUrl } = this.settings;
     if (linkFor === LinkFor.IMAGE) {
-      return '/files/' + subPath;
+      return URLExt.join(baseUrl, 'files', subPath);
     }
     if (subPath.match(/\.ipynb$/i)) {
-      return '/notebooks/' + subPath;
+      return URLExt.join(baseUrl, 'notebooks', subPath);
     }
-    return '/edit/' + subPath;
+    return URLExt.join(baseUrl, 'edit', subPath);
   }
 }
 
