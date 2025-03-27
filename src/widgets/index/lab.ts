@@ -24,7 +24,10 @@ export class JupyterLabOpener extends BaseOpener implements IContentOpener {
     this.app = app;
   }
 
-  protected async addWidget(widgets: LinkedWidget[]): Promise<RemoveCallback> {
+  protected async addWidget(
+    basePath: string,
+    widgets: LinkedWidget[]
+  ): Promise<RemoveCallback> {
     const panel = new Panel();
     const widgetInstances = await Promise.all(
       widgets.map(async ({ widget }) => await widget())
@@ -36,7 +39,7 @@ export class JupyterLabOpener extends BaseOpener implements IContentOpener {
     });
     panel.addClass('lc-index-widget');
     panel.id = 'lc_index:index-widget';
-    panel.title.label = 'Index';
+    panel.title.label = `Index of ${basePath}/`;
     panel.title.closable = true;
     this.app.shell.add(panel, 'main');
     return () => {

@@ -6,6 +6,7 @@ export type RemoveCallback = () => void;
 
 export interface IContentOpener {
   open(
+    basePath: string,
     svgPath: string | undefined,
     markdownPath: string | undefined
   ): Promise<RemoveCallback>;
@@ -36,6 +37,7 @@ export abstract class BaseOpener implements IContentOpener {
   }
 
   async open(
+    basePath: string,
     svgPath: string | undefined,
     markdownPath: string | undefined
   ): Promise<RemoveCallback> {
@@ -80,7 +82,7 @@ export abstract class BaseOpener implements IContentOpener {
         path: markdownPath
       });
     }
-    return await this.addWidget(linkedWidgets);
+    return await this.addWidget(basePath, linkedWidgets);
   }
 
   protected abstract resolveRelativePathOrHandler(
@@ -144,6 +146,7 @@ export abstract class BaseOpener implements IContentOpener {
   }
 
   protected abstract addWidget(
+    basePath: string,
     widgets: LinkedWidget[]
   ): Promise<RemoveCallback>;
 }

@@ -60,7 +60,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
         if (svgItem || markdownItem) {
           console.log('open:', svgItem?.path, markdownItem?.path);
           opener
-            .open(svgItem?.path, markdownItem?.path)
+            .open(fileBrowser.model.path, svgItem?.path, markdownItem?.path)
             .then((remove: () => void) => {
               removeOldWidget = remove;
             })

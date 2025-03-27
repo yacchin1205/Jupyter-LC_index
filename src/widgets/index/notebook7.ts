@@ -35,26 +35,48 @@ export class JupyterNotebook7Opener
   }
 
   protected async addWidget(
+    basePath: string,
     linkedWidgets: LinkedWidget[]
   ): Promise<RemoveCallback> {
-    const mainPanel = await this.createMainPanel(linkedWidgets);
-    const tabsIndex = this.panels.tab.widgets.length;
-    this.panels.tab.addWidget(mainPanel.panel);
+    const oldPanels = this.panels.tab.widgets.filter(widget =>
+      widget.title.label.match(/^Index of .*\//)
+    );
+    oldPanels.forEach(panel => panel.dispose());
+    let mainPanel: { panel: Panel; widgets: LabelWidget[] } | null = null;
     const leftPanel = await this.createLeftPanel(
       linkedWidgets,
-      (index: number) => {
+      async (index: number) => {
+        const targetIndex = this.panels.tab.widgets.findIndex(
+          widget => widget.title.label === `Index of ${basePath}/`
+        );
+        if (targetIndex < 0 || !mainPanel) {
+          mainPanel = await this.createMainPanel(basePath, linkedWidgets);
+          this.panels.tab.addWidget(mainPanel.panel);
+          setTimeout(() => {
+            this.panels.tab.currentIndex = this.panels.tab.widgets.length - 1;
+            const scroll = () => {
+              const mainWidgets = mainPanel!.widgets;
+              if (!mainWidgets || !mainWidgets[index]) {
+                return;
+              }
+              mainWidgets[index].node.scrollIntoView({ behavior: 'smooth' });
+            };
+            setTimeout(scroll, 100);
+          }, 100);
+          return;
+        }
         const scroll = () => {
-          const mainWidgets = mainPanel.widgets;
+          const mainWidgets = mainPanel!.widgets;
           if (!mainWidgets || !mainWidgets[index]) {
             return;
           }
           mainWidgets[index].node.scrollIntoView({ behavior: 'smooth' });
         };
-        if (this.panels.tab.currentIndex === tabsIndex) {
+        if (this.panels.tab.currentIndex === targetIndex) {
           scroll();
           return;
         }
-        this.panels.tab.currentIndex = tabsIndex;
+        this.panels.tab.currentIndex = targetIndex;
         setTimeout(scroll, 100);
       }
     );
@@ -68,7 +90,7 @@ export class JupyterNotebook7Opener
 
   private async createLeftPanel(
     linkedWidgets: LinkedWidget[],
-    onClick: (index: number) => void
+    onClick: (index: number) => Promise<void>
   ) {
     const panel = new Panel();
     panel.id = 'lc_index:index-left-widget';
@@ -79,7 +101,9 @@ export class JupyterNotebook7Opener
     linkedWidgets.forEach(({ filename }, index) => {
       panel.addWidget(
         new LabelWidget(filename, () => {
-          onClick(index);
+          onClick(index).then(() => {
+            console.log('Clicked:', filename);
+          });
         })
       );
       const widgetPanel = new Panel();
@@ -97,10 +121,14 @@ export class JupyterNotebook7Opener
     return panel;
   }
 
-  private async createMainPanel(linkedWidgets: LinkedWidget[]) {
+  private async createMainPanel(
+    basePath: string,
+    linkedWidgets: LinkedWidget[]
+  ) {
     const panel = new Panel();
     panel.id = 'lc_index:index-main-widget';
     panel.addClass('lc-index-widget');
+    panel.title.closable = true;
     const widgetInstances = await Promise.all(
       linkedWidgets.map(async ({ widget }) => await widget())
     );
@@ -111,8 +139,8 @@ export class JupyterNotebook7Opener
       panel.addWidget(label);
       panel.addWidget(widgetInstances[index]);
     });
-    panel.title.caption = 'Index';
-    panel.title.label = 'Index';
+    panel.title.caption = `Index of ${basePath}/`;
+    panel.title.label = `Index of ${basePath}/`;
     panel.title.icon = new LabIcon({
       name: 'lc_index::lc_index',
       svgstr: extractSvgString(PlatformType.JUPYTER_NOTEBOOK7_TREE, faPager)
