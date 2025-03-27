@@ -7,7 +7,7 @@ import { IDocumentManager } from '@jupyterlab/docmanager';
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 import { Platform, getPlatform } from './widgets/platform';
 import { observeFileBrowser } from './widgets/files';
-import { createOpener } from './widgets/open';
+import { createOpener } from './widgets/index/open';
 import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
 
 const MarkdownFileName = 'README.md';
