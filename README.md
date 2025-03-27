@@ -1,6 +1,6 @@
-# Jupyter-LC\_index [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/NII-cloud-operation/Jupyter-LC_index/master)
+# Jupyter-LC_index [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/NII-cloud-operation/Jupyter-LC_index/master)
 
-Jupyter-LC\_index is an extension that puts README.svg and README.md on the tree page of Jupyter.
+Jupyter-LC_index is an extension that puts README.svg and README.md on the tree page of Jupyter.
 
 ![example](./example/image.png)
 
@@ -8,7 +8,7 @@ README.svg appears on top of the page, and README.md appears on the bottom.
 
 ## Requirements
 
-* JupyterLab >= 4.0.0
+- JupyterLab >= 4.0.0
 
 ## Install
 
@@ -22,6 +22,7 @@ To use the extension you will also need to install and enable, you can use Jupyt
 then restart Jupyter lab.
 
 ## How to Use
+
 https://github.com/mnagaku/notebooks-diagram is a good example.
 
 ## Uninstall
