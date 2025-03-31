@@ -58,7 +58,9 @@
     "watch:src": "tsc -w"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@jupyterlab/application": "^4.0.3",
     "@jupyterlab/coreutils": "^6.0.3",
     "@jupyterlab/docmanager": "^4.0.3",
