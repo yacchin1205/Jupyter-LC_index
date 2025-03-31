@@ -13,6 +13,10 @@
   margin-top: 4px;
 }
 
+.lc-index-header-icon {
+  margin-left: auto;
+}
+
 .lc-index-header h1 {
   font-size: 1em;
 }
